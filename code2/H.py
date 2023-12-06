@@ -35,7 +35,7 @@ def write_json(score=None, events=None):
 
     json_object = json.dumps(data, indent=4)
 
-    f = open('FR400.json', "w")
+    f = open('H.json', "w")
     f.write(json_object)
     f.close()
 
