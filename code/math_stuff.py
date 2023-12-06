@@ -105,7 +105,7 @@ def main_loop():
 
     permutations = itertools.permutations(EVENTS)
 
-    finalized = {'Diving'}
+    finalized = {'Diving', '50 Free', '100 Free'}
     max_score = 0
     t0 = time.time()
     x=0
@@ -122,10 +122,6 @@ def main_loop():
 
         if p[0] not in finalized: finalized.add(p[0])
         if p[-1] in finalized: continue
-
-
-        finalized.add(p[0])
-
 
         loss = 0
         for s in raw_entries:
@@ -151,4 +147,4 @@ def main_loop():
 
 main_loop()
 
-
+# manually enter events in finalized set because skipping to last point won't include them
