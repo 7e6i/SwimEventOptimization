@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import itertools
 
-TOTAL = math.factorial(12)-2*math.factorial(11)
+TOTAL = (math.factorial(12)-2*math.factorial(11))//2
 EVENTS = ['200 MR',
           '200 Free',
           '200 IM',
@@ -20,7 +20,7 @@ EVENTS = ['200 MR',
 
 
 def read_csv():
-    df = pd.read_csv('EventsBySwimmer_Combined.tsv', delimiter='\t')
+    df = pd.read_csv('../data files/EventsBySwimmer_Combined.tsv', delimiter='\t')
 
     raw_entries = df['Events'].values.tolist()
 
@@ -30,7 +30,7 @@ def read_csv():
 
 
 def write_json(last=None, score=None, score_iter=None, events=None):
-    f = open('resumable_data.json', "r")
+    f = open('resumable_data2.json', "r")
     data = json.load(f)
     f.close()
 
@@ -43,12 +43,12 @@ def write_json(last=None, score=None, score_iter=None, events=None):
 
     json_object = json.dumps(data, indent=4)
 
-    f = open('resumable_data.json', "w")
+    f = open('resumable_data2.json', "w")
     f.write(json_object)
     f.close()
 
 def read_json():
-    f = open('resumable_data.json', "r")
+    f = open('resumable_data2.json', "r")
     data = json.load(f)
     f.close()
     return data
@@ -89,7 +89,7 @@ def main_loop():
     permuatations = itertools.permutations(EVENTS)
 
     max_score = 0
-    top_scores = {}
+    checked = set()
     t0 = time.time()
     x=0
 
@@ -101,20 +101,21 @@ def main_loop():
         elif x in [start_max]: pass
         elif x < last_iter: continue
 
-        if p[0]=='Diving' or p[-1]=='Diving':
-            continue
+        if p[0]=='Diving' or p[-1]=='Diving': continue
+        if p in checked: continue
 
         loss = 0
         for s in raw_entries:
             l = loss_fcn(s, p)
             loss += l
 
+        checked.add(p)
+        checked.add(reversed(p))
+
         if (loss > max_score):
-            top_scores[p] = loss
             max_score = loss
             print(f'\033[92m{x}, {loss}, {p}\033[0m')
             write_json(score=max_score, score_iter=x, events=str(p))
-
 
         if x%10000==0:
             t1 = time.time()
