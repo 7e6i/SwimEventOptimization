@@ -1,26 +1,43 @@
 import time
 import math
 import json
+from datetime import datetime, timedelta
+
 import pandas as pd
 import itertools
 
-TOTAL = math.factorial(12)-2*math.factorial(11)
-EVENTS = ['200 MR',
-          '200 Free',
-          '200 IM',
-          '50 Free',
-          'Diving',
-          '100 Fly',
-          '500 Free',
-          '100 Free',
-          '200 FR',
-          '100 Back',
-          '100 Breast',
-          '400 FR']
+TOTAL = 199584000
+# EVENTS = ['200 MR',
+#           '200 Free',
+#           '200 IM',
+#           '50 Free',
+#           'Diving',
+#           '100 Fly',
+#           '500 Free',
+#           '100 Free',
+#           '200 FR',
+#           '100 Back',
+#           '100 Breast',
+#           '400 FR']
+
+EVENTS = [
+    'Diving',
+    '50 Free',
+    '100 Free',
+    '200 Free',
+    '500 Free',
+    '100 Back',
+    '100 Breast',
+    '100 Fly',
+    '200 IM',
+    '200 FR',
+    '400 FR',
+    '200 MR'
+]
 
 
 def read_csv():
-    df = pd.read_csv('../data files/EventsBySwimmer_Combined.tsv', delimiter='\t')
+    df = pd.read_csv('../data/EventsBySwimmer_Combined.tsv', delimiter='\t')
 
     raw_entries = df['Events'].values.tolist()
 
@@ -54,7 +71,7 @@ def read_json():
     return data
 
 
-def loss_fcn(string, permuation):
+def loss_fcn(string, permutation):
     athlete_events = string.split(',')
     athlete_position = []
 
@@ -64,7 +81,7 @@ def loss_fcn(string, permuation):
 
     # find positions of each event
     for e in athlete_events:
-        athlete_position.append(permuation.index(e))
+        athlete_position.append(permutation.index(e))
     athlete_position.sort()
 
     # for each position, calculate distance
@@ -86,14 +103,14 @@ def main_loop():
     start_max = start['top score iteration']
     last_iter = start['last iteration']
 
-    permuatations = itertools.permutations(EVENTS)
+    permutations = itertools.permutations(EVENTS)
 
+    finalized = {'Diving'}
     max_score = 0
-    top_scores = {}
     t0 = time.time()
     x=0
 
-    for p in permuatations:
+    for p in permutations:
         # make it resumable by writing every 10k to json file
         x+=1
         # if x>10: break
@@ -101,16 +118,23 @@ def main_loop():
         elif x in [start_max]: pass
         elif x < last_iter: continue
 
-        if p[0]=='Diving' or p[-1]=='Diving':
-            continue
+        if p[0]== 'Diving': continue
+
+        if p[0] not in finalized: finalized.add(p[0])
+        if p[-1] in finalized: continue
+
+
+        finalized.add(p[0])
+
 
         loss = 0
         for s in raw_entries:
             l = loss_fcn(s, p)
             loss += l
 
+
+
         if (loss > max_score):
-            top_scores[p] = loss
             max_score = loss
             print(f'\033[92m{x}, {loss}, {p}\033[0m')
             write_json(score=max_score, score_iter=x, events=str(p))
@@ -119,8 +143,9 @@ def main_loop():
         if x%10000==0:
             t1 = time.time()
             tc = t1-t0
-            left = (TOTAL - x)/10000
-            print(x, round(tc,2), round(tc*left), loss, p)
+            cycles_remaining = (TOTAL - x)/10000
+            sec_left = tc*cycles_remaining
+            print(x, round(tc,2), int(sec_left), str(datetime.now() + timedelta(seconds=sec_left))[5:19], p)
             t0 = t1
             write_json(last=x)
 
