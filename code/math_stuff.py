@@ -7,6 +7,7 @@ import pandas as pd
 import itertools
 
 TOTAL = 199584000
+TOTAL = math.factorial(12)
 # EVENTS = ['200 MR',
 #           '200 Free',
 #           '200 IM',
@@ -106,7 +107,7 @@ def main_loop():
 
     permutations = itertools.permutations(EVENTS)
 
-    finalized = {'Diving', '50 Free', '100 Free'}
+    finalized = {'Diving'}
     max_score = 0
     t0 = time.time()
     x = 0
