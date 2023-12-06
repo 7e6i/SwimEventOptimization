@@ -113,7 +113,11 @@ def main_loop():
 
     for p in permutations:
         x += 1
-        # if x>10: break
+
+        # make sure to keep track of finalized
+        if p[0] not in finalized: finalized.add(p[0])
+
+        # loop until last best order, include it, loop to last iteration
         if x < start_max:
             continue
         elif x in [start_max]:
@@ -121,23 +125,27 @@ def main_loop():
         elif x < last_iter:
             continue
 
+        # because diving at the beginning is not useful
         if p[0] == 'Diving': continue
 
-        if p[0] not in finalized: finalized.add(p[0])
+        # because the fitness function is the same for reversed events
         if p[-1] in finalized: continue
 
+        # calculate loss for a given permutation
         loss = 0
         for s in raw_entries:
             l = loss_fcn(s, p)
             loss += l
 
+        # if the loss is better than the previous record, update the record
         if loss > max_score:
             max_score = loss
             print(f'\033[92m{x}, {loss}, {p}\033[0m')
             write_json(score=max_score, score_iter=x, events=str(p))
 
+        # let the user know when the program will be done
         if x % 10000 == 0:
-            cycles_complete = (x - last_iter-1)  # gives div by zero error without the minus 1
+            cycles_complete = (x - last_iter+1)  # the difference is zero the first iteration and throws DivByZero
             t_new = time.time() - t0
             avg_per_sec = (cycles_complete/t_new)
 
@@ -149,5 +157,3 @@ def main_loop():
 
 
 main_loop()
-
-# manually enter events in finalized set because skipping to last point won't include them
