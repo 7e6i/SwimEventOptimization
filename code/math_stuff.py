@@ -64,6 +64,7 @@ def write_json(last=None, score=None, score_iter=None, events=None):
     f.write(json_object)
     f.close()
 
+
 def read_json():
     f = open('resumable_data.json', "r")
     data = json.load(f)
@@ -76,7 +77,7 @@ def loss_fcn(string, permutation):
     athlete_position = []
 
     # if only 1 event, rest doesn't matter
-    if len(athlete_events)==1:
+    if len(athlete_events) == 1:
         return 0
 
     # find positions of each event
@@ -86,8 +87,8 @@ def loss_fcn(string, permutation):
 
     # for each position, calculate distance
     total = 0
-    for x in range(len(athlete_position)-1):
-        dif = athlete_position[x+1]-athlete_position[x]-1
+    for x in range(len(athlete_position) - 1):
+        dif = athlete_position[x + 1] - athlete_position[x] - 1
         total += dif
         # print(dif)
 
@@ -108,17 +109,19 @@ def main_loop():
     finalized = {'Diving', '50 Free', '100 Free'}
     max_score = 0
     t0 = time.time()
-    x=0
+    x = 0
 
     for p in permutations:
-        # make it resumable by writing every 10k to json file
-        x+=1
+        x += 1
         # if x>10: break
-        if x < start_max: continue
-        elif x in [start_max]: pass
-        elif x < last_iter: continue
+        if x < start_max:
+            continue
+        elif x in [start_max]:
+            pass
+        elif x < last_iter:
+            continue
 
-        if p[0]== 'Diving': continue
+        if p[0] == 'Diving': continue
 
         if p[0] not in finalized: finalized.add(p[0])
         if p[-1] in finalized: continue
@@ -128,22 +131,22 @@ def main_loop():
             l = loss_fcn(s, p)
             loss += l
 
-
-
-        if (loss > max_score):
+        if loss > max_score:
             max_score = loss
             print(f'\033[92m{x}, {loss}, {p}\033[0m')
             write_json(score=max_score, score_iter=x, events=str(p))
 
+        if x % 10000 == 0:
+            cycles_complete = (x - last_iter-1)  # gives div by zero error without the minus 1
+            t_new = time.time() - t0
+            avg_per_sec = (cycles_complete/t_new)
 
-        if x%10000==0:
-            t1 = time.time()
-            tc = t1-t0
-            cycles_remaining = (TOTAL - x)/10000
-            sec_left = tc*cycles_remaining
-            print(x, round(tc,2), int(sec_left), str(datetime.now() + timedelta(seconds=sec_left))[5:19], p)
-            t0 = t1
+            cycles_remaining = (TOTAL - x)
+            sec_left = cycles_remaining/avg_per_sec
+
+            print(x, int(avg_per_sec), int(sec_left), str(datetime.now() + timedelta(seconds=sec_left))[5:19], p)
             write_json(last=x)
+
 
 main_loop()
 
