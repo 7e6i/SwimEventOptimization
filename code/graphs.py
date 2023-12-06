@@ -3,7 +3,7 @@ from collections import Counter
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv('../data files/EventsBySwimmer_Combined.tsv', delimiter='\t')
+df = pd.read_csv('../data/EventsBySwimmer_Combined.tsv', delimiter='\t')
 
 
 print(df)
