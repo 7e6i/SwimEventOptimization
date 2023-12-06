@@ -79,18 +79,6 @@ def main_loop():
 
     permutations = itertools.permutations(EVENTS)
 
-    finalized = {'Diving',
-    '50 Free',
-    '100 Free',
-    '200 Free',
-    '500 Free',
-    '100 Back',
-    '100 Breast',
-    '100 Fly',
-    '200 IM',
-    '200 FR'
-     }
-
     TOTAL = math.factorial(11)
     max_score = 0
     x = 0
