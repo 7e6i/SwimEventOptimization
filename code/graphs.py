@@ -13,7 +13,8 @@ for x in df['Events'].values.tolist():
     events = x.split(',')
     temp = []
     for y in events:
-        if y not in ['200 FR','400 FR','200 MR']:
+        if y not in ['50 Free','100 Free', '200 Free', '500 Free', '100 Back', '100 Breast', '100 Fly', '200 IM']:
+        # if y not in ['200 FR', '400 FR', '200 MR']:
             temp.append(y)
 
     if len(temp)>1:
