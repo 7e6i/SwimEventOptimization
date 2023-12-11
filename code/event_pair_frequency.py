@@ -24,5 +24,3 @@ count = Counter(data)
 df = pd.DataFrame.from_dict(count, orient='index')
 df.plot(kind='bar')
 plt.show()
-
-# maybe make an EventCount_All and EventCount_Individual_Only

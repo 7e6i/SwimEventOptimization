@@ -1,5 +1,4 @@
 from collections import Counter
-
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -17,7 +16,6 @@ def entries_to_events():
                 mydict[y].append(col)
             else:
                 mydict[y] = [col]
-
 
     keys = sorted(list(mydict.keys()))
 

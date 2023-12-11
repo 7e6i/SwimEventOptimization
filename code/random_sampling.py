@@ -1,23 +1,17 @@
 import random
-import time
-import math
-import json
-from datetime import datetime, timedelta
-
+import numpy
 import pandas as pd
 import itertools
 import matplotlib.pyplot as plt
 
-TOTAL = 199584000
-TOTAL = math.factorial(12)
 EVENTS = ['200 MR',
           '200 Free',
           '200 IM',
           '50 Free',
           'Diving',
           '100 Fly',
-          '500 Free',
           '100 Free',
+          '500 Free',
           '200 FR',
           '100 Back',
           '100 Breast',
@@ -31,7 +25,6 @@ def read_csv():
     raw_entries = df['Events'].values.tolist()
 
     # for e in raw_events : print(e)
-
     return raw_entries
 
 
@@ -65,14 +58,14 @@ def main_loop():
 
     permutations = itertools.permutations(EVENTS)
 
-    max_score = 0
+    max_score = 3000
     results = []
 
     x = 0
     for s in permutations:
         x += 1
 
-        if x >500000: break
+        if x >100000: break
         p = list(s)
         random.shuffle(p)
 
@@ -87,7 +80,7 @@ def main_loop():
             print(x)
 
         # if the loss is better than the previous record, update the record
-        if loss > max_score:
+        if loss < max_score:
             max_score = loss
             print(f'\033[92m{x}, {loss}, {p}\033[0m')
 
@@ -95,5 +88,9 @@ def main_loop():
 
 
 results = main_loop()
+
+x = numpy.quantile(results, [0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1])
+print(x)
+
 plt.hist(results, bins=range(800,2900,10))
 plt.show()
