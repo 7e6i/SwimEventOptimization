@@ -1,6 +1,4 @@
-from collections import Counter
 import pandas as pd
-import matplotlib.pyplot as plt
 
 def entries_to_events():
     df = pd.read_csv('../data/NYSPHSAA_22-23_Girls.csv')
@@ -27,25 +25,3 @@ def entries_to_events():
     f.close()
 
     return mydict.values()
-
-
-def events_to_counts():
-    events = entries_to_events()
-    data = []
-
-    for x in events:
-        temp = []
-        for e in x:
-            if e not in ['200 FR','400 FR','200 MR']:
-                temp.append(e)
-
-        if len(temp)>=2:
-            data.append(str(temp))
-
-
-    count = Counter(data)
-    df = pd.DataFrame.from_dict(count, orient='index')
-    df.plot(kind='bar')
-    plt.show()
-
-events_to_counts()
