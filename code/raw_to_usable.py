@@ -25,3 +25,5 @@ def entries_to_events():
     f.close()
 
     return mydict.values()
+
+entries_to_events()
