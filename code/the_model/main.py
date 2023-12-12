@@ -2,24 +2,10 @@ import time
 import math
 import json
 from datetime import datetime, timedelta
-
 import pandas as pd
 import itertools
 
-TOTAL = 199584000
 TOTAL = math.factorial(12)
-# EVENTS = ['200 MR',
-#           '200 Free',
-#           '200 IM',
-#           '50 Free',
-#           'Diving',
-#           '100 Fly',
-#           '500 Free',
-#           '100 Free',
-#           '200 FR',
-#           '100 Back',
-#           '100 Breast',
-#           '400 FR']
 
 EVENTS = [
     'Diving',
@@ -38,7 +24,7 @@ EVENTS = [
 
 
 def read_csv():
-    df = pd.read_csv('../data/EventsBySwimmer_Combined.tsv', delimiter='\t')
+    df = pd.read_csv('../../data/EventsBySwimmer_Combined.tsv', delimiter='\t')
 
     raw_entries = df['Events'].values.tolist()
 
