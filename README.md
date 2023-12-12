@@ -1,5 +1,7 @@
 # Project Overview
 
+Python 3.11 was used but most 3.x versions should work. Check requirements.txt for the necessary additional packages.
+
 ## 1. Code
 This section contains various code files for data manipulation, the model itself and visualization.
  - *raw_to_usable.py* - converts the raw data to a list of each athlete
@@ -27,6 +29,12 @@ The following two,
 are files containing the raw data from each meet, modified for readability.
 
 ## Other Notes
+
+The folder code2 contains 11 separate files, each with their own implementation of model.
+Because I didn't have time to code in multiprocessing, each file was run concurrently on a large computer, each writing to their own json file.
+Use at your own risk but they should work.
+
+
 Though not useful in any conceivable way, the worst event order found so far (by randomly sampling from the input space) is 794 with the following order:
 
 ['500 Free', '200 Free', '50 Free', '100 Free', '400 FR', '200 FR', '200 MR', '100 Fly', '200 IM', '100 Back', '100 Breast', 'Diving']
