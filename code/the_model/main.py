@@ -110,6 +110,7 @@ def main_loop():
         elif x in [start_max]:
             pass
         elif x < last_iter:
+            t0 = time.time()
             continue
 
         # because diving at the beginning is not useful
@@ -127,7 +128,7 @@ def main_loop():
         # if the loss is better than the previous record, update the record
         if loss > max_score:
             max_score = loss
-            print(f'\033[92m{x}, {loss}, {p}\033[0m')
+            print(f'\033[92mi:{x}, score: {loss}, order: {p}\033[0m')
             write_json(score=max_score, score_iter=x, events=str(p))
 
         # let the user know when the program will be done
@@ -139,8 +140,10 @@ def main_loop():
             cycles_remaining = (TOTAL - x)
             sec_left = cycles_remaining/avg_per_sec
 
-            print(x, int(avg_per_sec), int(sec_left), str(datetime.now() + timedelta(seconds=sec_left))[5:19], p)
+            print(f'i:{x}, perms/sec: {int(avg_per_sec)}, sec left: {int(sec_left)}, est. finish: {str(datetime.now() + timedelta(seconds=sec_left))[5:19]}')
             write_json(last=x)
 
 
 main_loop()
+# On the first run, the time estimate will be wrong because the loop starts by skipping all 11! diving permutations,
+# thinking it's calculating things really fast. Rerunning the program will give a more accurate estimate.
